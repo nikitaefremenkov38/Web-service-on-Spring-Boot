@@ -100,6 +100,7 @@
                 <version>12.1.8</version>
                 <configuration>
                     <format>HTML</format>
+                    <nvdApiKeyEnvironmentVariable>NVD_API_KEY</nvdApiKeyEnvironmentVariable>
                     <suppressionFiles>
                         <suppressionFile>${project.basedir}/dependency-check-suppressions.xml</suppressionFile>
                     </suppressionFiles>
