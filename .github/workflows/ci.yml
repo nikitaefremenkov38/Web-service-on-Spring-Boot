@@ -110,7 +110,7 @@ jobs:
           cmd_options: -r report_html.html
           fail_action: false
           allow_issue_writing: false
-          artifact_name: zap-scan-baseline
+          artifact_name: zapscanbaseline
 
       - name: Upload ZAP baseline report
         uses: actions/upload-artifact@v4
@@ -153,7 +153,7 @@ jobs:
           cmd_options: -r report_html.html
           fail_action: false
           allow_issue_writing: false
-          artifact_name: zap-scan-api
+          artifact_name: zapscanapi
 
       - name: Upload ZAP API report
         uses: actions/upload-artifact@v4
