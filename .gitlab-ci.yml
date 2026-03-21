@@ -32,3 +32,15 @@ semgrep_sast:
     when: always
     reports:
       sast: gl-sast-report.json
+
+dependency_check_sca:
+  stage: test
+  tags:
+    - saas-linux-small-amd64
+  image: maven:3.9.14-eclipse-temurin-21
+  script:
+    - mvn -B -DskipTests dependency-check:check
+  artifacts:
+    when: always
+    paths:
+      - target/dependency-check-report.html
