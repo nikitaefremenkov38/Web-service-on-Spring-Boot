@@ -103,8 +103,9 @@ jobs:
         run: sleep 25
 
       - name: ZAP Baseline Scan
-        uses: zaproxy/action-baseline@v0.9.0
+        uses: zaproxy/action-baseline@v0.15.0
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           target: http://localhost:8080
           rules_file_name: zap-rules.tsv
           cmd_options: -r report_html.html
@@ -147,6 +148,7 @@ jobs:
       - name: ZAP API Scan
         uses: zaproxy/action-api-scan@v0.10.0
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           target: openapi.yaml
           format: openapi
           rules_file_name: zap-rules.tsv
