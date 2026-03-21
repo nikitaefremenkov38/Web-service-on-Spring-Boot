@@ -6,6 +6,7 @@ workflow:
 
 stages:
   - build
+  - test
 
 build:
   stage: build
@@ -17,3 +18,17 @@ build:
   artifacts:
     paths:
       - ./target/*.jar
+
+semgrep_sast:
+  stage: test
+  tags:
+    - saas-linux-small-amd64
+  image: semgrep/semgrep
+  variables:
+    SEMGREP_GITLAB_JSON: "1"
+  script:
+    - semgrep ci --code --gitlab-sast > gl-sast-report.json || true
+  artifacts:
+    when: always
+    reports:
+      sast: gl-sast-report.json
