@@ -107,7 +107,7 @@ jobs:
         with:
           target: http://localhost:8080
           rules_file_name: zap-rules.tsv
-          cmd_options: -r zap-baseline-report.html
+          cmd_options: -r report_html.html
           fail_action: false
           allow_issue_writing: false
 
@@ -116,7 +116,7 @@ jobs:
         if: always()
         with:
           name: zap-baseline-report
-          path: zap-baseline-report.html
+          path: report_html.html
 
   dast_api:
     needs: build
@@ -149,7 +149,7 @@ jobs:
           target: openapi.yaml
           format: openapi
           rules_file_name: zap-rules.tsv
-          cmd_options: -r zap-api-report.html
+          cmd_options: -r report_html.html
           fail_action: false
           allow_issue_writing: false
 
@@ -158,4 +158,4 @@ jobs:
         if: always()
         with:
           name: zap-api-report
-          path: zap-api-report.html
+          path: report_html.html
