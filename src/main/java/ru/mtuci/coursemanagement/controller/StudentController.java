@@ -1,11 +1,9 @@
 package ru.mtuci.coursemanagement.controller;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -20,7 +18,6 @@ import ru.mtuci.coursemanagement.repository.StudentRepository;
 import java.util.List;
 
 @Controller
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class StudentController {
     private final StudentRepository repo;
@@ -46,7 +43,7 @@ public class StudentController {
 
     @GetMapping("/api/students/{id}")
     @ResponseBody
-    public ResponseEntity<Student> one(@PathVariable Long id, HttpSession s) {
+    public ResponseEntity<Student> one(@PathVariable Long id) {
         return repo.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 

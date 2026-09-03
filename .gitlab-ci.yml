@@ -1,0 +1,82 @@
+workflow:
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main"'
+      when: always
+    - when: never
+
+stages:
+  - build
+  - test
+
+build:
+  stage: build
+  tags:
+    - saas-linux-small-amd64
+  image: maven:3.9.14-eclipse-temurin-21
+  script:
+    - mvn -B clean test package
+  artifacts:
+    paths:
+      - ./target/*.jar
+
+semgrep_sast:
+  stage: test
+  tags:
+    - saas-linux-small-amd64
+  image: semgrep/semgrep
+  variables:
+    SEMGREP_GITLAB_JSON: "1"
+  script:
+    - semgrep ci --code --gitlab-sast > gl-sast-report.json || true
+  artifacts:
+    when: always
+    reports:
+      sast: gl-sast-report.json
+
+dependency_check_sca:
+  stage: test
+  tags:
+    - saas-linux-small-amd64
+  image: maven:3.9.14-eclipse-temurin-21
+  script:
+    - mvn -B -DskipTests dependency-check:check
+  artifacts:
+    when: always
+    paths:
+      - target/dependency-check-report.html
+
+zap_baseline:
+  stage: test
+  tags:
+    - saas-linux-small-amd64
+  image:
+    name: zaproxy/zap-stable
+    entrypoint: [""]
+  dependencies:
+    - build
+  script:
+    - java -jar target/*.jar &
+    - sleep 25
+    - zap-baseline.py -t http://localhost:8080 -c zap-rules.tsv -r zap-baseline-report.html || true
+  artifacts:
+    when: always
+    paths:
+      - zap-baseline-report.html
+
+zap_api:
+  stage: test
+  tags:
+    - saas-linux-small-amd64
+  image:
+    name: zaproxy/zap-stable
+    entrypoint: [""]
+  dependencies:
+    - build
+  script:
+    - java -jar target/*.jar &
+    - sleep 25
+    - zap-api-scan.py -t openapi.yaml -f openapi -c zap-rules.tsv -r zap-api-report.html || true
+  artifacts:
+    when: always
+    paths:
+      - zap-api-report.html
